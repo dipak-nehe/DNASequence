@@ -1,7 +1,10 @@
 package twistBioScience;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
@@ -13,7 +16,7 @@ public class commonFunctions {
 
 
 	
-	//read file and load into hashmap
+	//read file and load into hash map
 	public static LinkedHashMap<String,String> readFile(String filePath) throws IOException 
 	{
 		LinkedHashMap<String,String> mapForDNA = new LinkedHashMap<String,String>();
@@ -48,8 +51,7 @@ public class commonFunctions {
 		try {
 		    while ((line = br.readLine()) != null) {
 		       // process the line
-		    	//System.out.println(content);
-		    	content = content + line;
+		      	content = content + line;
 		    	
 		    }
 		} finally {
@@ -65,4 +67,26 @@ public class commonFunctions {
 		return commonFunctions.UniqueDNASequence + "_" + System.currentTimeMillis()/1000+".xlsx";
 		
 	}
-}
+	
+	//write to a file
+	public static void writeToFile(String fileName,String content)
+	{
+		try {
+	         //String content = "TutorialsPoint is one the best site in the world";
+	         File file = new File(fileName);
+	         if (!file.exists()) {
+	            file.createNewFile();
+	         } 
+	         FileWriter fw = new FileWriter(file.getAbsoluteFile());
+	         BufferedWriter bw = new BufferedWriter(fw);
+	         bw.write(content);
+	         bw.close();
+	         
+	         System.out.println("Done");
+	      } catch (IOException e) 
+		  {
+	         e.printStackTrace();
+	      } 
+	   } 
+	
+	}

@@ -37,7 +37,7 @@ public class driverClass {
 
 	}
 
-	//Load the translation table in a hashmap(key,value)
+	// Load the translation table in a hashmap(key,value)
 	@Test(enabled = true, priority = 0)
 	public void loadCodesIntoHashMap() throws IOException {
 
@@ -49,7 +49,7 @@ public class driverClass {
 		}
 	}
 
-	//Convert the 3 character DNA into AA codes as per given specification
+	// Convert the 3 character DNA into AA codes as per given specification
 	@Test(enabled = true, priority = 1)
 	public void convertDNAToAA() throws IOException {
 		String dnaString = commonFunctions.readFileIntoString(inputFile);
@@ -66,11 +66,11 @@ public class driverClass {
 
 		}
 
-		System.out.println("Translated DNA codes:"+sBuffer.toString());
+		System.out.println("Translated DNA codes:" + sBuffer.toString());
 
 	}
 
-	//Find all occurances of 'M' start of DNA sequence and '*' end of DNA Sequence and load into a global Hashmap to be used later
+	// Find all occurances of 'M' start of DNA sequence & '*' end of DNA Sequence & load into a global Hash map to be used later
 	@Test(enabled = true, priority = 2)
 	public void returnUniqueDNASequence() throws IOException {
 		String dnaSeq = sBuffer.toString();
@@ -78,11 +78,10 @@ public class driverClass {
 		for (int i = 0; i < dnaSeq.length(); i++) {
 			if (dnaSeq.charAt(i) == 'M') {
 				sequenceMapNormalCharacter.put(i, 'M');
-				
 
 			} else if (dnaSeq.charAt(i) == '*') {
 				sequenceMapSpecialCharacter.put(i, '*');
-				
+
 			} else {
 				continue;
 			}
@@ -90,63 +89,33 @@ public class driverClass {
 
 	}
 
-	//Get Position of 'M' character such that successive appearances are more than 21
+	// Get Position of 'M' character such that successive appearances are more than
+	// 21
 	@Test(enabled = true, priority = 3)
 	public void getUniqueSeq() throws IOException {
 
-		int prev = 0;
-		for (int key : sequenceMapNormalCharacter.keySet()) {
-			if (key - prev < 21) {
-				prev = key;
-				sequenceMapNormalCharacter.put(key, null);
-				continue;
-			} else {
-				prev = key;
-
-			}
-
-		}
-
-		int temp = 0;
-		
-		//Loop through and remove unwanted data which is not as per required criteria
+		// Loop through and remove unwanted data which is not as per required criteria
 
 		for (int key1 : sequenceMapNormalCharacter.keySet()) {
 
 			for (int key2 : sequenceMapSpecialCharacter.keySet()) {
 
-				//If current 'M' character position is less than that of previous '*' ignore it as it is already covered in previous DNA sequence
-				if (key1 < temp) {
-					continue;
-				}
-
-				//from previous processing NULL means not valid for current processing so ignore it
-				else if (sequenceMapNormalCharacter.get(key1) == null) {
-					continue;
-				} 
-				
-				//from previous processing NULL means not valid for current processing so ignore it
-				else if (sequenceMapSpecialCharacter.get(key2) == null) {
-					continue;
-				}
-                
-				//if the difference between 'M' and '*' character position is less than 20 then ignore it
-				else if ((key1 >= key2) || ((key2 - key1) < 20)) {
+				if ((key1 >= key2) || ((key2 - key1) < 20)) {
 					// System.out.println("1: "+key1+":"+key2);
 					continue;
-				} 
-				//valid value so process it
-				else if ((key2 + 1 - key1) % 3 == 0) {
-					finalMap.put(key1 + "-" + key2, sBuffer.toString().substring(key1, key2 + 1));
-					//System.out.println("2: " + key1 + ":" + key2);
-					//System.out.println(sBuffer.toString().substring(key1, key2 + 1));
-					sequenceMapSpecialCharacter.put(key2, null);
-					sequenceMapNormalCharacter.put(key1, null);
-					temp = key2;
-					break;
 				}
-				
-				//Everything else goes here
+				// valid value so process it
+				else if ((key2 + 1 - key1) % 3 == 0) {
+
+					if (finalMap.containsKey(sBuffer.toString().substring(key1, key2 + 1))) {
+						System.out
+								.println("DNA Sequence already found:" + sBuffer.toString().substring(key1, key2 + 1));
+						continue;
+					}
+					finalMap.put(key1 + "-" + key2, sBuffer.toString().substring(key1, key2 + 1));
+				}
+
+				// Everything else goes here
 				else {
 
 					continue;
@@ -156,14 +125,17 @@ public class driverClass {
 
 		}
 
-
 	}
 
 	// Excel report to generate the output
 	@Test(enabled = true, priority = 4)
 	public void writeToExcelRate() throws FileNotFoundException {
+		System.out.println(
+				"Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
+		long startTime = System.currentTimeMillis() / 1000;
+		// System.setProperty("-Dorg.apache.poi.util.POILogger",
+		// "org.apache.poi.util.NullLogger");
 		XSSFWorkbook workbook = new XSSFWorkbook();
-
 		XSSFSheet sheet = workbook.createSheet("ExchangeRate");
 		sheet.setColumnWidth(0, 6000);
 		sheet.setColumnWidth(1, 6000);
@@ -188,7 +160,7 @@ public class driverClass {
 		headerCell = header.createCell(1);
 		headerCell.setCellValue("UniqSeq");
 		headerCell.setCellStyle(headerStyle);
-		
+
 		headerCell = header.createCell(2);
 		headerCell.setCellValue("Len");
 		headerCell.setCellStyle(headerStyle);
@@ -202,6 +174,7 @@ public class driverClass {
 		for (String key : finalMap.keySet()) {
 
 			// Start-End Position
+			// System.out.println("key:"+key);
 			XSSFRow row = sheet.createRow(i);
 			XSSFCell cell = row.createCell(0);
 			cell.setCellValue(key);
@@ -212,8 +185,7 @@ public class driverClass {
 			cell = row.createCell(1);
 			cell.setCellValue(finalMap.get(key));
 			cell.setCellStyle(style);
-			//sheet.autoSizeColumn(1);
-
+			// sheet.autoSizeColumn(1);
 
 			// Length
 			cell = row.createCell(2);
@@ -221,12 +193,9 @@ public class driverClass {
 			cell.setCellStyle(style);
 			sheet.autoSizeColumn(2);
 
-
 			i++;
 		}
 
-		// File currDir = new File(".");
-		// String path = currDir.getAbsolutePath();
 		String fileName = commonFunctions.returnUniqueFileName();
 		String fileLocation = resultFolder + fileName;
 
@@ -243,6 +212,11 @@ public class driverClass {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		long endTime = System.currentTimeMillis() / 1000;
+
+		System.out.println("Total minutes for running is:" + (endTime - startTime) / 60);
+
 	}
 
 }
