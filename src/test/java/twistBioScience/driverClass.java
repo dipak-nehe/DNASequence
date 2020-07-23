@@ -130,11 +130,8 @@ public class driverClass {
 	// Excel report to generate the output
 	@Test(enabled = true, priority = 4)
 	public void writeToExcelRate() throws FileNotFoundException {
-		System.out.println(
-				"Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
-		long startTime = System.currentTimeMillis() / 1000;
-		// System.setProperty("-Dorg.apache.poi.util.POILogger",
-		// "org.apache.poi.util.NullLogger");
+		System.out.println("Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
+
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("ExchangeRate");
 		sheet.setColumnWidth(0, 6000);
@@ -213,10 +210,7 @@ public class driverClass {
 			e.printStackTrace();
 		}
 
-		long endTime = System.currentTimeMillis() / 1000;
-
-		System.out.println("Total minutes for running is:" + (endTime - startTime) / 60);
-
+		
 	}
 
 }
