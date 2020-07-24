@@ -94,6 +94,7 @@ public class driverClass {
 	@Test(enabled = true, priority = 3)
 	public void getUniqueSeq() throws IOException {
 
+		int counter=0;
 		// Loop through and remove unwanted data which is not as per required criteria
 
 		for (int key1 : sequenceMapNormalCharacter.keySet()) {
@@ -107,13 +108,15 @@ public class driverClass {
 				// valid value so process it
 				else if ((key2 + 1 - key1) % 3 == 0) {
 
-					if (finalMap.containsKey(sBuffer.toString().substring(key1, key2 + 1))) {
+					if (finalMap.containsValue(sBuffer.toString().substring(key1, key2 + 1))) {
 						System.out
 								.println("DNA Sequence already found:" + sBuffer.toString().substring(key1, key2 + 1));
 						continue;
 					}
 					finalMap.put(key1 + "-" + key2, sBuffer.toString().substring(key1, key2 + 1));
+					counter++;
 				}
+				
 
 				// Everything else goes here
 				else {
@@ -124,7 +127,7 @@ public class driverClass {
 			}
 
 		}
-
+		System.out.println("Number of unique DNA sequence:"+counter);
 	}
 
 	// Excel report to generate the output
