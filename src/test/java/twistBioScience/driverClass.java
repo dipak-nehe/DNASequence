@@ -112,12 +112,12 @@ public class driverClass {
 	public void getUniqueSeq() throws IOException {
 		int numberOfTotalSeq = 0;
 		int numberOfNonUnique = 0;
-
-		String getTranslatedValue = "";
+		String getTranslatedValue;
 		String concanateString;
 		String aaSeq ="";
 		int begainIndex=0;
 		int endIndex=0;
+		int startIndex;
 
 		// Loop through and remove unwanted data which is not as per required criteria
 		for (int key1 : sequenceMapNormalCharacter.keySet()) {
@@ -136,6 +136,8 @@ public class driverClass {
 					endIndex = begainIndex+ aaSeq.length()*3;
 					getTranslatedValue=s.substring(begainIndex, endIndex);	
 					concanateString = aaSeq + ":" + getTranslatedValue;
+					//Java String starts at 0 so need to add 1 to arrive at right index number
+					startIndex = begainIndex+1;
 
 					if (finalResults.containsValue(concanateString)) {
 						System.out
@@ -148,7 +150,7 @@ public class driverClass {
 						//only list the first 3000
 						if (numberOfTotalSeq<=numberOfResultsToExtract)
 						{
-						finalResults.put(begainIndex+"-"+key1+":"+key2, concanateString);
+						finalResults.put(startIndex+"-"+key1+":"+key2, concanateString);
 	
 						}
 			
@@ -167,6 +169,9 @@ public class driverClass {
 		}
 
 		System.out.println("Number of unique DNA sequence:" + numberOfTotalSeq);
+		//System.out.println("Number of non unique DNA sequence:" + numberOfNonUnique);
+
+		
 	}
 
 	
@@ -176,8 +181,7 @@ public class driverClass {
 	public void writeToExcelTwistDNAResult() throws FileNotFoundException {
 		//int limitRecordDisplay = 0;
 
-		System.out.println(
-				"Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
+		System.out.println("Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder");
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet(excelWorkSheetName);
@@ -209,9 +213,9 @@ public class driverClass {
 		headerCell.setCellValue(column4);
 		headerCell.setCellStyle(headerStyle);
 		
-		headerCell = header.createCell(4);
+		/*headerCell = header.createCell(4);
 		headerCell.setCellValue("Start-End AA Seq");
-		headerCell.setCellStyle(headerStyle);
+		headerCell.setCellStyle(headerStyle);*/
 
 		// get the list for exchange rate list and write to excel
 
@@ -251,9 +255,9 @@ public class driverClass {
 			// sheet.autoSizeColumn(2);
 
 			// Start Index - AA Seq
-			cell = row.createCell(4);
+		/*	cell = row.createCell(4);
 			cell.setCellValue(key.substring( key.indexOf("-")+1, key.length()));
-			cell.setCellStyle(style);
+			cell.setCellStyle(style);*/
 
 
 			//limitRecordDisplay++;
