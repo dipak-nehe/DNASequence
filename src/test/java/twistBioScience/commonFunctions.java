@@ -17,6 +17,13 @@ public class commonFunctions {
 	public static String resultFolder = "resultFolder";
 	private static String UniqueDNASequence = "UniqueDNASequence";
 	public static String outputFileName = "AACodedOutput";
+	public static String numberOfResultsToExtract="numberOfResultsToExtract";
+	public static String excelWorkSheetName="excelWorkSheetName";
+	public static String column1 ="column1";
+	public static String column2 ="column2";
+	public static String column3 ="column3";
+	public static String column4 ="column4";
+
 
 	// read file and load into hash map
 	public static LinkedHashMap<String, String> readFile(String filePath) throws IOException {

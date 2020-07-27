@@ -19,12 +19,18 @@ public class driverClass {
 	private LinkedHashMap<String, String> globalMap = new LinkedHashMap<String, String>();
 	private LinkedHashMap<Integer, Character> sequenceMapNormalCharacter = new LinkedHashMap<Integer, Character>();
 	private LinkedHashMap<Integer, Character> sequenceMapSpecialCharacter = new LinkedHashMap<Integer, Character>();
-	//private LinkedHashMap<Integer, String> finalMap = new LinkedHashMap<Integer, String>();
 	private LinkedHashMap<String, String> finalResults = new LinkedHashMap<String, String>();
 	private String inputFile;
 	private String dnaSeqFile;
 	private String resultFolder;
 	private String outputFileName;
+	private long numberOfResultsToExtract;
+	private String excelWorkSheetName;
+	private String column1;
+	private String column2;
+	private String column3;
+	private String column4;
+
 
 	// Call constructor to initialize variables
 	public driverClass() {
@@ -33,6 +39,13 @@ public class driverClass {
 			this.dnaSeqFile = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.dnaSeqFileName);
 			this.resultFolder = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.resultFolder);
 			this.outputFileName = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.outputFileName);
+			this.numberOfResultsToExtract= Long.parseLong(ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.numberOfResultsToExtract));
+			this.excelWorkSheetName=ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.excelWorkSheetName);
+			this.column1=ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.column1);
+			this.column2=ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.column2);
+			this.column3=ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.column3);
+			this.column4=ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.column4);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -133,7 +146,7 @@ public class driverClass {
 					if (getTranslatedValue.length() % 3 == 0) {
 						
 						//only list the first 3000
-						if (numberOfTotalSeq<=3000)
+						if (numberOfTotalSeq<=numberOfResultsToExtract)
 						{
 						finalResults.put(begainIndex+"-"+key1+":"+key2, concanateString);
 	
@@ -167,7 +180,7 @@ public class driverClass {
 				"Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet("TwistDNA");
+		XSSFSheet sheet = workbook.createSheet(excelWorkSheetName);
 		XSSFRow header = sheet.createRow(0);
 
 		XSSFCellStyle headerStyle = workbook.createCellStyle();
@@ -181,19 +194,19 @@ public class driverClass {
 		headerStyle.setFont(font);
 
 		XSSFCell headerCell = header.createCell(0);
-		headerCell.setCellValue("AA Sequence");
+		headerCell.setCellValue(column1);
 		headerCell.setCellStyle(headerStyle);
 
 		headerCell = header.createCell(1);
-		headerCell.setCellValue("DNA Sequence");
+		headerCell.setCellValue(column2);
 		headerCell.setCellStyle(headerStyle);
 
 		headerCell = header.createCell(2);
-		headerCell.setCellValue("Start Index");
+		headerCell.setCellValue(column3);
 		headerCell.setCellStyle(headerStyle);
 
 		headerCell = header.createCell(3);
-		headerCell.setCellValue("Len");
+		headerCell.setCellValue(column4);
 		headerCell.setCellStyle(headerStyle);
 		
 		headerCell = header.createCell(4);

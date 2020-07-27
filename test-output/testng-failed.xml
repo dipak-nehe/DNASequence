@@ -5,7 +5,7 @@
     <classes>
       <class name="twistBioScience.driverClass">
         <methods>
-          <include name="writeToExcelRate"/>
+          <include name="writeToExcelTwistDNAResult"/>
         </methods>
       </class> <!-- twistBioScience.driverClass -->
     </classes>
