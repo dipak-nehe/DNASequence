@@ -19,10 +19,12 @@ public class driverClass {
 	private LinkedHashMap<String, String> globalMap = new LinkedHashMap<String, String>();
 	private LinkedHashMap<Integer, Character> sequenceMapNormalCharacter = new LinkedHashMap<Integer, Character>();
 	private LinkedHashMap<Integer, Character> sequenceMapSpecialCharacter = new LinkedHashMap<Integer, Character>();
-	private LinkedHashMap<String, String> finalMap = new LinkedHashMap<String, String>();
+	//private LinkedHashMap<Integer, String> finalMap = new LinkedHashMap<Integer, String>();
+	private LinkedHashMap<String, String> finalResults = new LinkedHashMap<String, String>();
 	private String inputFile;
 	private String dnaSeqFile;
 	private String resultFolder;
+	private String outputFileName;
 
 	// Call constructor to initialize variables
 	public driverClass() {
@@ -30,6 +32,7 @@ public class driverClass {
 			this.inputFile = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.inputFileName);
 			this.dnaSeqFile = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.dnaSeqFileName);
 			this.resultFolder = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.resultFolder);
+			this.outputFileName = ReadPropertyFile.readPropFileAndReturnPropertyValue(commonFunctions.outputFileName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,11 +69,13 @@ public class driverClass {
 
 		}
 
-		System.out.println("Translated DNA codes:" + sBuffer.toString());
+		//System.out.println("Translated DNA codes:" + sBuffer.toString());
+		commonFunctions.writeToFile(this.outputFileName, sBuffer.toString());
 
 	}
 
-	// Find all occurances of 'M' start of DNA sequence & '*' end of DNA Sequence & load into a global Hash map to be used later
+	// Find all occurances of 'M' start of DNA sequence & '*' end of DNA Sequence &
+	// load into a global Hash map to be used later
 	@Test(enabled = true, priority = 2)
 	public void returnUniqueDNASequence() throws IOException {
 		String dnaSeq = sBuffer.toString();
@@ -90,57 +95,79 @@ public class driverClass {
 	}
 
 	// Get Position of 'M' character such that successive appearances are more than
-	// 21
 	@Test(enabled = true, priority = 3)
 	public void getUniqueSeq() throws IOException {
+		int numberOfTotalSeq = 0;
+		int numberOfNonUnique = 0;
 
-		int counter=0;
+		String getTranslatedValue = "";
+		String concanateString;
+		String aaSeq ="";
+		int begainIndex=0;
+		int endIndex=0;
+
 		// Loop through and remove unwanted data which is not as per required criteria
-
 		for (int key1 : sequenceMapNormalCharacter.keySet()) {
-
+			
 			for (int key2 : sequenceMapSpecialCharacter.keySet()) {
 
 				if ((key1 >= key2) || ((key2 - key1) < 20)) {
-					// System.out.println("1: "+key1+":"+key2);
 					continue;
 				}
 				// valid value so process it
-				else if ((key2 + 1 - key1) % 3 == 0) {
+				else
+				{
+					aaSeq = sBuffer.toString().substring(key1, key2 + 1);
+					String s = commonFunctions.readFileIntoString(inputFile);
+					begainIndex = sBuffer.toString().indexOf(aaSeq)*3;
+					endIndex = begainIndex+ aaSeq.length()*3;
+					getTranslatedValue=s.substring(begainIndex, endIndex);	
+					concanateString = aaSeq + ":" + getTranslatedValue;
 
-					if (finalMap.containsValue(sBuffer.toString().substring(key1, key2 + 1))) {
+					if (finalResults.containsValue(concanateString)) {
 						System.out
-								.println("DNA Sequence already found:" + sBuffer.toString().substring(key1, key2 + 1));
+								.println("DNA Sequence already found:" + concanateString);
 						continue;
 					}
-					finalMap.put(key1 + "-" + key2, sBuffer.toString().substring(key1, key2 + 1));
-					counter++;
-				}
+					//finalMap.put(begainIndex, aaSeq);
+					if (getTranslatedValue.length() % 3 == 0) {
+						
+						//only list the first 3000
+						if (numberOfTotalSeq<=3000)
+						{
+						finalResults.put(begainIndex+"-"+key1+":"+key2, concanateString);
+	
+						}
+			
+						numberOfTotalSeq++;						
+
+					} else {
+						numberOfNonUnique=numberOfNonUnique+1;
+						continue;
+					}
 				
-
-				// Everything else goes here
-				else {
-
-					continue;
 				}
 
 			}
 
+		
 		}
-		System.out.println("Number of unique DNA sequence:"+counter);
+
+		System.out.println("Number of unique DNA sequence:" + numberOfTotalSeq);
 	}
 
+	
+
 	// Excel report to generate the output
-	@Test(enabled = true, priority = 4)
-	public void writeToExcelRate() throws FileNotFoundException {
-		System.out.println("Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
+	@Test(enabled = true, priority = 6)
+	public void writeToExcelTwistDNAResult() throws FileNotFoundException {
+		//int limitRecordDisplay = 0;
+
+		System.out.println(
+				"Generating the output excel.Due to large data set please be patience..\nExcel results will be generated in Output folder within the project workspace");
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet("ExchangeRate");
-		sheet.setColumnWidth(0, 6000);
-		sheet.setColumnWidth(1, 6000);
-		sheet.setColumnWidth(2, 6000);
-
+		XSSFSheet sheet = workbook.createSheet("TwistDNA");
 		XSSFRow header = sheet.createRow(0);
 
 		XSSFCellStyle headerStyle = workbook.createCellStyle();
@@ -154,15 +181,23 @@ public class driverClass {
 		headerStyle.setFont(font);
 
 		XSSFCell headerCell = header.createCell(0);
-		headerCell.setCellValue("Start:End");
+		headerCell.setCellValue("AA Sequence");
 		headerCell.setCellStyle(headerStyle);
 
 		headerCell = header.createCell(1);
-		headerCell.setCellValue("UniqSeq");
+		headerCell.setCellValue("DNA Sequence");
 		headerCell.setCellStyle(headerStyle);
 
 		headerCell = header.createCell(2);
+		headerCell.setCellValue("Start Index");
+		headerCell.setCellStyle(headerStyle);
+
+		headerCell = header.createCell(3);
 		headerCell.setCellValue("Len");
+		headerCell.setCellStyle(headerStyle);
+		
+		headerCell = header.createCell(4);
+		headerCell.setCellValue("Start-End AA Seq");
 		headerCell.setCellStyle(headerStyle);
 
 		// get the list for exchange rate list and write to excel
@@ -171,30 +206,53 @@ public class driverClass {
 		style.setWrapText(true);
 		int i = 1;
 
-		for (String key : finalMap.keySet()) {
+		for (String key : finalResults.keySet()) {
 
-			// Start-End Position
-			// System.out.println("key:"+key);
+			/*if (limitRecordDisplay >= 27703) {
+				System.out.println("linit:"+limitRecordDisplay);
+				break;
+			}*/
+			
+			String[] aaToDna = finalResults.get(key).split(":");
 			XSSFRow row = sheet.createRow(i);
-			XSSFCell cell = row.createCell(0);
-			cell.setCellValue(key);
-			cell.setCellStyle(style);
-			sheet.autoSizeColumn(0);
 
-			// Unique DNA
-			cell = row.createCell(1);
-			cell.setCellValue(finalMap.get(key));
+			// AA Sequence
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue(aaToDna[0]);
 			cell.setCellStyle(style);
-			// sheet.autoSizeColumn(1);
+
+			// DNA Sequence
+			cell = row.createCell(1);
+			cell.setCellValue(aaToDna[1]);
+			cell.setCellStyle(style);
+
+			// Start Index - DNA Seq
+			cell = row.createCell(2);
+			cell.setCellValue(key.substring(0, key.indexOf("-")));
+			cell.setCellStyle(style);
 
 			// Length
-			cell = row.createCell(2);
-			cell.setCellValue(finalMap.get(key).length());
+			cell = row.createCell(3);
+			cell.setCellValue(aaToDna[1].length());
 			cell.setCellStyle(style);
-			sheet.autoSizeColumn(2);
+			// sheet.autoSizeColumn(2);
 
+			// Start Index - AA Seq
+			cell = row.createCell(4);
+			cell.setCellValue(key.substring( key.indexOf("-")+1, key.length()));
+			cell.setCellStyle(style);
+
+
+			//limitRecordDisplay++;
 			i++;
 		}
+		
+		//if we auto resize during the excel operations then
+		sheet.autoSizeColumn(0);
+		sheet.autoSizeColumn(1);
+		sheet.autoSizeColumn(2);
+		sheet.autoSizeColumn(3);
+		sheet.autoSizeColumn(4);
 
 		String fileName = commonFunctions.returnUniqueFileName();
 		String fileLocation = resultFolder + fileName;
@@ -213,7 +271,6 @@ public class driverClass {
 			e.printStackTrace();
 		}
 
-		
 	}
 
 }

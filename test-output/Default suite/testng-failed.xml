@@ -5,7 +5,7 @@
     <classes>
       <class name="twistBioScience.driverClass">
         <methods>
-          <include name="returnUniqueDNASequence"/>
+          <include name="writeToExcelRate"/>
         </methods>
       </class> <!-- twistBioScience.driverClass -->
     </classes>

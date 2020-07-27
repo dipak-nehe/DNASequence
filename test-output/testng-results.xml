@@ -2,31 +2,31 @@
 <testng-results ignored="0" total="5" passed="5" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2020-07-23T22:07:21Z" name="Default suite" finished-at="2020-07-23T22:38:31Z" duration-ms="1870033">
+  <suite started-at="2020-07-27T05:05:16Z" name="Default suite" finished-at="2020-07-27T05:06:20Z" duration-ms="63989">
     <groups>
     </groups>
-    <test started-at="2020-07-23T22:07:21Z" name="Default test" finished-at="2020-07-23T22:38:31Z" duration-ms="1870033">
+    <test started-at="2020-07-27T05:05:16Z" name="Default test" finished-at="2020-07-27T05:06:20Z" duration-ms="63989">
       <class name="twistBioScience.driverClass">
-        <test-method signature="loadCodesIntoHashMap()[pri:0, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-23T22:07:21Z" name="loadCodesIntoHashMap" finished-at="2020-07-23T22:07:21Z" duration-ms="13" status="PASS">
+        <test-method signature="loadCodesIntoHashMap()[pri:0, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-27T05:05:16Z" name="loadCodesIntoHashMap" finished-at="2020-07-27T05:05:16Z" duration-ms="16" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- loadCodesIntoHashMap -->
-        <test-method signature="convertDNAToAA()[pri:1, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-23T22:07:21Z" name="convertDNAToAA" finished-at="2020-07-23T22:07:21Z" duration-ms="80" status="PASS">
+        <test-method signature="convertDNAToAA()[pri:1, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-27T05:05:16Z" name="convertDNAToAA" finished-at="2020-07-27T05:05:16Z" duration-ms="49" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- convertDNAToAA -->
-        <test-method signature="returnUniqueDNASequence()[pri:2, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-23T22:07:21Z" name="returnUniqueDNASequence" finished-at="2020-07-23T22:07:21Z" duration-ms="5" status="PASS">
+        <test-method signature="returnUniqueDNASequence()[pri:2, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-27T05:05:16Z" name="returnUniqueDNASequence" finished-at="2020-07-27T05:05:16Z" duration-ms="2" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- returnUniqueDNASequence -->
-        <test-method signature="getUniqueSeq()[pri:3, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-23T22:07:21Z" name="getUniqueSeq" finished-at="2020-07-23T22:07:22Z" duration-ms="1133" status="PASS">
+        <test-method signature="getUniqueSeq()[pri:3, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-27T05:05:16Z" name="getUniqueSeq" finished-at="2020-07-27T05:05:22Z" duration-ms="6555" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getUniqueSeq -->
-        <test-method signature="writeToExcelRate()[pri:4, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-23T22:07:22Z" name="writeToExcelRate" finished-at="2020-07-23T22:38:31Z" duration-ms="1868714" status="PASS">
+        <test-method signature="writeToExcelTwistDNAResult()[pri:6, instance:twistBioScience.driverClass@26e356f0]" started-at="2020-07-27T05:05:22Z" name="writeToExcelTwistDNAResult" finished-at="2020-07-27T05:06:20Z" duration-ms="57325" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- writeToExcelRate -->
+        </test-method> <!-- writeToExcelTwistDNAResult -->
       </class> <!-- twistBioScience.driverClass -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->

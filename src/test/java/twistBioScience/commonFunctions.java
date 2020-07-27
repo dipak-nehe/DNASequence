@@ -6,13 +6,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 public class commonFunctions {
 	public static String dnaSeqFileName = "dnaSeqFile";
 	public static String inputFileName = "inputFile";
 	public static String resultFolder = "resultFolder";
 	private static String UniqueDNASequence = "UniqueDNASequence";
+	public static String outputFileName = "AACodedOutput";
 
 	// read file and load into hash map
 	public static LinkedHashMap<String, String> readFile(String filePath) throws IOException {
@@ -78,5 +82,47 @@ public class commonFunctions {
 			e.printStackTrace();
 		}
 	}
+	
+	//get key
+	public static String  getKey(LinkedHashMap<String, String> map, String value) {
+	    for (Entry<String, String> entry : map.entrySet()) {
+	        if (entry.getValue().equals(value)) {
+	            return entry.getKey();
+	        }
+	    }
+	    return "not Found";
+	}
+	
+	//convertAndVeify
+	public static String convertedKey(LinkedHashMap<String, String> globalMap,LinkedHashMap<String, String> finalMap,String stringToParse) throws IOException 
+	{
+				String strHolder="";
+				//System.out.println("parsing for :"+stringToParse);
+				char[] charArray = stringToParse.toCharArray();
+				for (char c : charArray) 
+				{
+					//System.out.println("parsing for :"+c);
+
+					strHolder=strHolder+commonFunctions.getKey(globalMap,c+"");
+				}
+				
+				//System.out.println("Converted code for:"+stringToParse+" is:"+strHolder);
+				return strHolder;
+		
+	}
+	
+	//read file into a string
+	public static String readFileAsString(String fileName) 
+	{ 
+		String text = ""; 
+		try { 
+			text = new String(Files.readAllBytes(Paths.get("file.txt"))); 
+		} 
+		catch (IOException e) 
+		{ e.printStackTrace(); 
+		} 
+		return text; 
+	}
+
 
 }
