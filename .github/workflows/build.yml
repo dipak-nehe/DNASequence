@@ -1,0 +1,52 @@
+name: build
+
+# Builds the project and runs the DNA sequence extraction (the TestNG suite in testng.xml), then uploads the
+# Excel result and the translated amino-acid sequence.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # The pom doesn't name testng.xml and the class isn't called *Test, so plain `mvn test` would run nothing.
+      # The repo has an old result committed in Output/; remove it so only this run's file is checked and uploaded.
+      # shell: bash turns on pipefail, so a Maven failure still fails the step through the tee.
+      - name: Run the extraction (testng.xml)
+        shell: bash
+        run: |
+          rm -f Output/UniqueDNASequence_*.xlsx
+          mvn -B test -Dsurefire.suiteXmlFiles=testng.xml | tee mvn.log
+
+      # Fail if the suite didn't actually run, or produced no Excel file.
+      - name: Check the run produced results
+        run: |
+          grep -q "Tests run: 5, Failures: 0, Errors: 0, Skipped: 0" mvn.log || { echo "::error::The 5 TestNG methods didn't all run and pass"; exit 1; }
+          ls Output/UniqueDNASequence_*.xlsx > /dev/null 2>&1 || { echo "::error::No Excel file in Output/"; exit 1; }
+          {
+            echo "### DNA sequence extraction"
+            grep -o "Number of unique DNA sequence:[0-9]*" mvn.log | sed 's/:/: /'
+            echo "Excel file: $(ls Output/UniqueDNASequence_*.xlsx | tail -1)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dna-sequence-results
+          path: |
+            Output/UniqueDNASequence_*.xlsx
+            src/test/resources/output.txt
+            target/surefire-reports/
+          if-no-files-found: ignore
